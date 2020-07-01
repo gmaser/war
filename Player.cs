@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 using War.Properties;
 
@@ -134,8 +133,7 @@ namespace War
 
         private void Shuffle()
         {
-            Random rnd = new Random();
-            drawPile = new Stack<Card>(discardPile.OrderBy(x => rnd.Next()));
+            drawPile = CardDeck.Shuffle(discardPile);
             discardPile.Clear();
         }
 
