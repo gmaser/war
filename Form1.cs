@@ -17,6 +17,10 @@ namespace War
         private static readonly String player2DisplayName = "Player2";
         private static readonly String fightText = "Fight!";
         private static readonly String playAgainText = "Play Again?";
+        private static readonly String winBattleSuffix = " Wins!";
+        private static readonly String winWarSuffix = " won the war!";
+        private static readonly String tie = "Tie!";
+        private static readonly String loadingError = "Error loading decK";
 
         public Form1()
         {
@@ -37,31 +41,24 @@ namespace War
 
             warWinner = null;
 
-            CardDeck deck = LoadDeck();
-            if (deck != null)
+            try
             {
+                CardDeck deck = LoadDeck();
                 player1 = new Player(player1DisplayName, player1Card, player1DrawPile, player1TotalCards, player1TieCards);
                 player2 = new Player(player2DisplayName, player2Card, player2DrawPile, player2TotalCards, player2TieCards);
                 DealCards(player1, player2, deck.Shuffle());
             }
-            else
+            catch (Exception)
             {
-                winner.Text = "Error Loading Deck";
+                winner.Text = loadingError;
                 button1.Enabled = false;
             }
         }
 
-        private CardDeck LoadDeck()
+        private static CardDeck LoadDeck()
         {
             XmlSerializer serializer = new XmlSerializer(typeof(CardDeck));
-            try
-            {
-                return (CardDeck)serializer.Deserialize(new StringReader(Resources.standard_deck));
-            }
-            catch(Exception e)
-            {
-                return null;
-            }
+            return (CardDeck)serializer.Deserialize(new StringReader(Resources.standard_deck));
         }
 
         private static void DealCards(Player p1, Player p2, Stack<Card> shuffledDeck)
@@ -79,7 +76,7 @@ namespace War
             }
         }
 
-        private Player Battle()
+        private void Battle()
         {
             Card player1NextCard = player1.PlayNextCard();
             Card player2NextCard = player2.PlayNextCard();
@@ -87,28 +84,28 @@ namespace War
             if (player1NextCard == null)
             {
                 warWinner = player2;
-                return player2;
+                return;
             }
 
             if (player2NextCard == null)
             {
                 warWinner = player1;
-                return player1;
+                return;
             }
 
             if (player1NextCard.Rank > player2NextCard.Rank)
             {
-                player1.WinCards(player2.LoseCards());
-                return player1;
+                player1.WinCards(player2);
+                winner.Text = player1.Name + winBattleSuffix;
             }
             else if (player2NextCard.Rank > player1NextCard.Rank)
             {
-                player2.WinCards(player1.LoseCards());
-                return player2;
+                player2.WinCards(player1);
+                winner.Text = player2.Name + winBattleSuffix;
             }
             else
             {
-                return null;
+                winner.Text = tie;
             }
 
         }
@@ -122,16 +119,7 @@ namespace War
             }
             else
             {
-                Player battleWinner = Battle();
-
-                if (battleWinner != null)
-                {
-                    winner.Text = battleWinner.Name + " Wins!";
-                }
-                else
-                {
-                    winner.Text = "Tie!";
-                }
+                Battle();
 
                 if (player1.CardCount == 0)
                 {
@@ -145,7 +133,7 @@ namespace War
 
                 if (warWinner != null)
                 {
-                    winner.Text = warWinner.Name + " won the war!";
+                    winner.Text = warWinner.Name + winWarSuffix;
                     button1.Text = playAgainText;
                 }
             }

@@ -56,17 +56,6 @@ namespace War
         }
 
         /// <summary>
-        /// Returns the cards in play for this player with the intention that another player will empty the stack.   
-        /// Updates total cards display 
-        /// </summary>
-        /// <returns>The the cards in play</returns>
-        public Stack<Card> LoseCards()
-        {
-            UpdateTotal();
-            return inPlay;
-        }
-
-        /// <summary>
         /// Moves the top card from the players draw pile to the in play pile. 
         /// Displays the card and updates the draw pile display.
         /// </summary>
@@ -76,7 +65,7 @@ namespace War
             Card next = NextCard();
             UpdateTie();
             inPlay.Push(next);
-            ShowCard(next);
+            UpdateCardDisplay(next);
             UpdateDrawDisplay();
             return next;
         }
@@ -86,11 +75,12 @@ namespace War
         /// Updates total cards display
         /// </summary>
         /// <param name="cards">Another player's in play pile</param>
-        public void WinCards(Stack<Card> cards)
+        public void WinCards(Player otherPlayer)
         {
-            while (cards.Count != 0)
+            Stack<Card> otherCards = otherPlayer.LoseCards();
+            while (otherCards.Count != 0)
             {
-                discardPile.Add(cards.Pop());
+                discardPile.Add(otherCards.Pop());
             }
             while (inPlay.Count != 0)
             {
@@ -99,6 +89,21 @@ namespace War
             UpdateTotal();
         }
 
+        /// <summary>
+        /// Returns the cards in play for this player with the intention that another player will empty the stack.   
+        /// Updates total cards display 
+        /// </summary>
+        /// <returns>The the cards in play</returns>
+        private Stack<Card> LoseCards()
+        {
+            UpdateTotal();
+            return inPlay;
+        }
+
+        /// <summary>
+        /// Gets the top card in the player's draw pile.  If the draw pile is empty, the discard pile will be shuffled into the draw pile
+        /// </summary>
+        /// <returns>Top card in the player's draw pile, null if the player has no more cards</returns>
         private Card NextCard()
         {
             try
@@ -111,6 +116,10 @@ namespace War
             }
         }
 
+        /// <summary>
+        /// Returns the player's draw pile.  If the draw pile is empty, shuffle the discard pile into the draw pile
+        /// </summary>
+        /// <returns></returns>
         private Stack<Card> GetDrawPile()
         {
             if (drawPile.Count == 0)
@@ -130,7 +139,7 @@ namespace War
             discardPile.Clear();
         }
 
-        private void ShowCard(Card card)
+        private void UpdateCardDisplay(Card card)
         {
             if (cardDisplay.Image != null)
             {
