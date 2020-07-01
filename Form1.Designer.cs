@@ -39,6 +39,8 @@
             this.player2TotalCards = new System.Windows.Forms.Label();
             this.player1DrawPile = new System.Windows.Forms.PictureBox();
             this.player2DrawPile = new System.Windows.Forms.PictureBox();
+            this.player1TieCards = new System.Windows.Forms.Label();
+            this.player2TieCards = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.player1Card)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.player2Card)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.player1DrawPile)).BeginInit();
@@ -111,11 +113,9 @@
             this.winner.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.winner.Location = new System.Drawing.Point(364, 74);
             this.winner.Name = "winner";
-            this.winner.Size = new System.Drawing.Size(51, 20);
+            this.winner.Size = new System.Drawing.Size(0, 20);
             this.winner.TabIndex = 6;
-            this.winner.Text = "label2";
             this.winner.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.winner.Visible = false;
             // 
             // player1TotalCards
             // 
@@ -155,11 +155,29 @@
             this.player2DrawPile.TabIndex = 10;
             this.player2DrawPile.TabStop = false;
             // 
+            // player1TieCards
+            // 
+            this.player1TieCards.AutoSize = true;
+            this.player1TieCards.Location = new System.Drawing.Point(229, 286);
+            this.player1TieCards.Name = "player1TieCards";
+            this.player1TieCards.Size = new System.Drawing.Size(0, 13);
+            this.player1TieCards.TabIndex = 11;
+            // 
+            // player2TieCards
+            // 
+            this.player2TieCards.AutoSize = true;
+            this.player2TieCards.Location = new System.Drawing.Point(502, 286);
+            this.player2TieCards.Name = "player2TieCards";
+            this.player2TieCards.Size = new System.Drawing.Size(0, 13);
+            this.player2TieCards.TabIndex = 12;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.player2TieCards);
+            this.Controls.Add(this.player1TieCards);
             this.Controls.Add(this.player2DrawPile);
             this.Controls.Add(this.player1DrawPile);
             this.Controls.Add(this.player2TotalCards);
@@ -195,6 +213,8 @@
         private System.Windows.Forms.Label player2TotalCards;
         private System.Windows.Forms.PictureBox player1DrawPile;
         private System.Windows.Forms.PictureBox player2DrawPile;
+        private System.Windows.Forms.Label player1TieCards;
+        private System.Windows.Forms.Label player2TieCards;
     }
 }
 

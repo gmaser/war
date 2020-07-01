@@ -14,6 +14,7 @@ namespace War
         private readonly PictureBox cardDisplay;
         private readonly PictureBox drawDisplay;
         private readonly Label totalCards;
+        private readonly Label tieDisplay;
 
         private static readonly String totalCardsPrefix = "Total Cards: ";
 
@@ -30,12 +31,13 @@ namespace War
             get { return drawPile.Count + discardPile.Count; }
         }
 
-        public Player(String playerName, PictureBox card, PictureBox draw, Label total)
+        public Player(String playerName, PictureBox card, PictureBox draw, Label total, Label tie)
         {
             Name = playerName;
             cardDisplay = card;
             drawDisplay = draw;
             totalCards = total;
+            tieDisplay = tie;
             drawPile = new Stack<Card>();
             discardPile = new List<Card>();
             inPlay = new Stack<Card>();
@@ -72,6 +74,7 @@ namespace War
         public Card PlayNextCard()
         {
             Card next = NextCard();
+            UpdateTie();
             inPlay.Push(next);
             ShowCard(next);
             UpdateDrawDisplay();
@@ -85,11 +88,11 @@ namespace War
         /// <param name="cards">Another player's in play pile</param>
         public void WinCards(Stack<Card> cards)
         {
-            while(cards.Count != 0)
+            while (cards.Count != 0)
             {
                 discardPile.Add(cards.Pop());
             }
-            while(inPlay.Count != 0)
+            while (inPlay.Count != 0)
             {
                 discardPile.Add(inPlay.Pop());
             }
@@ -100,7 +103,7 @@ namespace War
         {
             try
             {
-                return GetPlayPile().Pop();
+                return GetDrawPile().Pop();
             }
             catch (InvalidOperationException)
             {
@@ -108,7 +111,7 @@ namespace War
             }
         }
 
-        private Stack<Card> GetPlayPile()
+        private Stack<Card> GetDrawPile()
         {
             if (drawPile.Count == 0)
             {
@@ -122,11 +125,9 @@ namespace War
 
         private void Shuffle()
         {
-            Console.WriteLine("Shuffling " + Name + "'s discard pile");
             Random rnd = new Random();
             drawPile = new Stack<Card>(discardPile.OrderBy(x => rnd.Next()));
             discardPile.Clear();
-            //updateDrawDisplay();
         }
 
         private void ShowCard(Card card)
@@ -140,14 +141,14 @@ namespace War
 
         private void UpdateDrawDisplay()
         {
-            if(drawPile.Count == 0)
+            if (drawPile.Count == 0)
             {
                 drawDisplay.Image.Dispose();
                 drawDisplay.Image = null;
             }
             else
             {
-                if(drawDisplay.Image == null)
+                if (drawDisplay.Image == null)
                 {
                     drawDisplay.Image = Resources.red_back;
                 }
@@ -157,6 +158,22 @@ namespace War
         private void UpdateTotal()
         {
             totalCards.Text = totalCardsPrefix + CardCount;
+        }
+
+        private void UpdateTie()
+        {
+            if (inPlay.Count == 0)
+            {
+                tieDisplay.Text = null;
+            }
+            else if (inPlay.Count == 1)
+            {
+                tieDisplay.Text = inPlay.Peek().Name;
+            }
+            else
+            {
+                tieDisplay.Text += ", " + inPlay.Peek().Name;
+            }
         }
 
     }
